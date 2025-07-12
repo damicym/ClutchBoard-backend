@@ -7,7 +7,7 @@ import { connectDB } from './src/database.js'
 // Inicializamos la app
 const app = express()
 app.use(cors())
-app.use(express.json({ limit: '10mb' }))
+app.use(express.json({ limit: '30mb' }))
 app.set('port', process.env.PORT)
 app.listen(app.get('port'), () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${app.get('port')}`)
