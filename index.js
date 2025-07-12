@@ -1,73 +1,44 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv/config')
+import express from 'express'
+import cors from 'cors'
+import 'dotenv/config'
+import Card from './src/models/Card.js'
+import { connectDB } from './src/database.js'
 
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+// Inicializamos la app
+const app = express()
+app.use(cors())
+app.use(express.json({ limit: '10mb' }))
+app.set('port', process.env.PORT)
+app.listen(app.get('port'), () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${app.get('port')}`)
+})
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-});
+await connectDB()
 
-// Ruta de prueba
+// Rutas
 app.get('/', (req, res) => {
-  res.send('Servidor funcionando 😎');
-});
+    res.json({ message: 'Servidor funcionando 😎' })
+})
 
-const cardSchema = new mongoose.Schema({
-    titleText: { type: String, required: true },
-    mapSrc: String,
-    povSrc: { type: String, required: true },
-    desc: String,
-    nombre: { type: String, required: true },
-    fecha: String,
-    mapa: String,
-    agente: { type: String, required: true },
-    habilidad: String
-});
-const Card = mongoose.model('Card', cardSchema);
+app.get('/cards', async (req, res) => {
+    try {
+        const cards = await Card.find()
+        res.status(200).json(cards)
+    } catch (err) {
+        res.status(400).json({ error: 'No se pudieron obtener las cards' })
+    }
+})
 
-mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-  })
-  .then(() => console.log('✅ Conectado a MongoDB'))
-  .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
-// mongoose.disconnect()
 
 app.post('/cards', async (req, res) => {
     try {
-        // mongoose.connect(process.env.MONGODB_URI, {
-        //     useNewUrlParser: true,
-        //     useUnifiedTopology: true
-        // })
-        // .then(() => console.log('✅ Conectado a MongoDB'))
-        // .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
-        const newCard = new Card(req.body);
-        // mongoose.disconnect()
-        await newCard.save();
-        res.status(201).json(newCard);
+        const newCard = new Card(req.body)
+        await newCard.save()
+        res.status(200).json(newCard)
     } catch (err) {
-        res.status(400).json({ error: 'No se pudo guardar la card' });
+        res.status(400).json({ error: 'No se pudo guardar la card' })
     }
-});
+})
 
-app.get('/cards', async (req, res) => {
-  try {
-    // mongoose.connect(process.env.MONGODB_URI, {
-    //         useNewUrlParser: true,
-    //         useUnifiedTopology: true
-    //     })
-    //     .then(() => console.log('✅ Conectado a MongoDB'))
-    //     .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
-        const cards = await Card.find();
-        // mongoose.disconnect()
-        res.json(cards);
-  } catch (err) {
-    res.status(500).json({ error: 'No se pudieron obtener las cards' });
-  }
-});
 
+app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }))
