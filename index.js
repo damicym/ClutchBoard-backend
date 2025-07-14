@@ -32,6 +32,12 @@ app.get('/cards', async (req, res) => {
 
 app.post('/cards', async (req, res) => {
     try {
+        if(req.body.povSrc.size >= '5mb'){
+            
+        }
+        else if(req.body.mapSrc.size >= '5mb'){
+            
+        }
         const newCard = new Card(req.body)
         await newCard.save()
         res.status(200).json(newCard)
