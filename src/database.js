@@ -4,8 +4,8 @@ import 'dotenv/config'
 export const connectDB = async () => {
     try {
         await connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
+            // useNewUrlParser: true,
+            // useUnifiedTopology: true
         })
         console.log('✅ Conectado a MongoDB')
     } catch (err) {

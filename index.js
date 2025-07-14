@@ -29,14 +29,27 @@ app.get('/cards', async (req, res) => {
     }
 })
 
+function calcularTamanoBase64(base64String) {
+  const longitud = base64String.length;
+  const sinCabecera = base64String.indexOf(',') >= 0
+    ? base64String.split(',')[1].length
+    : longitud;
+
+  return Math.ceil((sinCabecera * 3) / 4); // bytes
+}
 
 app.post('/cards', async (req, res) => {
+    const base64pov = req.body.povSrc;
+    const tamanopov = calcularTamanoBase64(base64pov);
+    const base64map = req.body.mapSrc;
+    const tamanomap = calcularTamanoBase64(base64map);
+
     try {
-        if(req.body.povSrc.size >= '5mb'){
-            throw new Error('El archivo POV es demasiado grande')
+        if(tamanopov >= 5 * 1024 * 1024){
+            throw new Error('El archivo POV pesa mas de 5MB')
         }
-        else if(req.body.mapSrc.size >= '5mb'){
-            throw new Error('El archivo MAP es demasiado grande')
+        else if(tamanomap >= 5 * 1024 * 1024){
+            throw new Error('El archivo MAP pesa mas de 5MB')
         }
         const newCard = new Card(req.body)
         try {
