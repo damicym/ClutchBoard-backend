@@ -33,16 +33,21 @@ app.get('/cards', async (req, res) => {
 app.post('/cards', async (req, res) => {
     try {
         if(req.body.povSrc.size >= '5mb'){
-            
+            throw new Error('El archivo POV es demasiado grande')
         }
         else if(req.body.mapSrc.size >= '5mb'){
-            
+            throw new Error('El archivo MAP es demasiado grande')
         }
         const newCard = new Card(req.body)
-        await newCard.save()
+        try {
+            await newCard.save()
+        } catch (error) {
+            res.status(500).json({ error: 'No se pudo guardar la card' })
+        }
         res.status(200).json(newCard)
     } catch (err) {
-        res.status(400).json({ error: 'No se pudo guardar la card' })
+        // res.status(400).json({ error: 'No se pudo guardar la card' })
+        res.status(400).json({ error: err.message })
     }
 })
 
