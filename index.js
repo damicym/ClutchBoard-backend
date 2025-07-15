@@ -46,23 +46,22 @@ app.post('/cards', async (req, res) => {
 
     try {
         if(tamanopov >= 5 * 1024 * 1024){
-            throw new Error('El archivo POV pesa mas de 5MB')
+            throw new Error('Error: La imagen POV es demasiado pesada')
         }
         else if(tamanomap >= 5 * 1024 * 1024){
-            throw new Error('El archivo MAP pesa mas de 5MB')
+            throw new Error('Error: La imagen MAP es demasiado pesada')
         }
         const newCard = new Card(req.body)
         try {
             await newCard.save()
+            res.status(200).json(newCard)
         } catch (error) {
-            res.status(500).json({ error: 'No se pudo guardar la card' })
+            res.status(500).json({ error: 'No se pudo guardar el artículo' })
         }
-        res.status(200).json(newCard)
     } catch (err) {
         // res.status(400).json({ error: 'No se pudo guardar la card' })
         res.status(400).json({ error: err.message })
     }
 })
-
 
 app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }))
