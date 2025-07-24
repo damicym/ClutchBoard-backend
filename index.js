@@ -32,7 +32,8 @@ app.get('/cards', async (req, res) => {
         const cards = await Card.find()
         res.status(200).json(cards)
     } catch (err) {
-        res.status(400).json({ error: 'No se pudieron obtener las cards' })
+        console.log('No se pudieron obtener las cards\n' + err.message)
+        res.status(400).json({ error: 'No se pudieron obtener las cards\n' + err.message })
     }
 })
 
@@ -63,10 +64,12 @@ app.post('/cards', async (req, res) => {
             await newCard.save()
             res.status(200).json(newCard)
         } catch (error) {
-            res.status(500).json({ error: 'No se pudo guardar el artículo' })
+            console.log('No se pudo guardar el artículo\n' + err.message)
+            res.status(500).json({ error: 'No se pudo guardar el artículo\n' + err.message })
         }
     } catch (err) {
         // res.status(400).json({ error: 'No se pudo guardar la card' })
+        console.log('error al postear card' + err.message)
         res.status(400).json({ error: err.message })
     }
 })
