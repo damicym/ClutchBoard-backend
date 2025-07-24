@@ -33,7 +33,7 @@ app.get('/cards', async (req, res) => {
         res.status(200).json(cards)
     } catch (err) {
         console.log('No se pudieron obtener las cards\n' + err.message)
-        res.status(400).json({ error: 'No se pudieron obtener las cards\n' + err.message })
+        res.status(400).json({ error: 'No se pudieron obtener las cards'})
     }
 })
 
@@ -65,7 +65,7 @@ app.post('/cards', async (req, res) => {
             res.status(200).json(newCard)
         } catch (error) {
             console.log('No se pudo guardar el artículo\n' + err.message)
-            res.status(500).json({ error: 'No se pudo guardar el artículo\n' + err.message })
+            res.status(500).json({ error: 'No se pudo guardar el artículo'})
         }
     } catch (err) {
         // res.status(400).json({ error: 'No se pudo guardar la card' })
