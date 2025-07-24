@@ -20,6 +20,11 @@ app.get('/', (req, res) => {
     res.json({ message: 'Servidor funcionando 😎' })
 })
 
+app.get('/healthz', (req, res) => {
+  res.sendStatus(200);
+});
+
+
 app.get('/cards', async (req, res) => {
     try {
         const cards = await Card.find()
